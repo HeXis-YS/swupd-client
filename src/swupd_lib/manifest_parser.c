@@ -311,7 +311,11 @@ struct manifest *manifest_parse(const char *component, const char *filename, boo
 				goto err_close;
 			}
 		} else if (str_starts_with(line, "includes:\t") == 0) {
-			includes = list_prepend_data(includes, strdup_or_die(c));
+			if (strcmp(c, "hardware-uefi") == 0 || strncmp(c, "linux-firmware", 14) == 0) {
+				optional = list_prepend_data(optional, strdup_or_die(c));
+			} else {
+				includes = list_prepend_data(includes, strdup_or_die(c));
+			}
 		} else if (str_starts_with(line, "also-add:\t") == 0) {
 			optional = list_prepend_data(optional, strdup_or_die(c));
 		}
